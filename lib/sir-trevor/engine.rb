@@ -4,6 +4,7 @@ module SirTrevor
 
     require 'redcarpet'
     require 'twitter-text'
+    require 'underscore-rails'
 
     initializer "sir_trevor.load_app_instance_data" do |app|
       SirTrevor.setup do |config|
