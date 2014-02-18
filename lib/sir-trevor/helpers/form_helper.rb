@@ -13,6 +13,8 @@ module SirTrevor
         input_html = (options.delete(:input_html) || {})
         input_html['class'] = "sir-trevor-area visuallyhidden"
         hash = input_html.stringify_keys
+        
+        input_html[:object] = options[:object]
 
 
         #https://github.com/mjhoy/ckeditor/commit/fca24021e13d355f74c9538f9db27dc58687ce65
