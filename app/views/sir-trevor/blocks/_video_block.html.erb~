@@ -4,7 +4,7 @@
 	<% elsif block['source'] == 'youtube' %>
 	  <iframe width="600" height="400" src="//www.youtube.com/embed/<%= block['remote_id'] %>" frameborder="0" allowfullscreen></iframe>
     <% elsif block['source'] == 'vine' %>
-      <iframe src="//www.vine.co/v/<%= block['remote_id'] %>/embed/simple\" width="<%= block['width'] %>" height="<%= block['width'] %>" frameborder="0"></iframe><script async src="http://platform.vine.co/static/scripts/embed.js" charset=\"utf-8\"></script>
+      <iframe src="vine.co/v/<%= block['remote_id'] %>/embed/simple\" width="<%= block['width'] %>" height="<%= block['width'] %>" frameborder="0"></iframe><script async src="http://platform.vine.co/static/scripts/embed.js" charset=\"utf-8\"></script>
     <% elsif block['source'] == 'dailymotion' %>
       <iframe src="//www.dailymotion.com/embed/video/<%= block['remote_id'] %>" width="580" height="320" frameborder="0"></iframe>
     <% end %>
