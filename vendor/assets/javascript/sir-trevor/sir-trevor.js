@@ -2147,7 +2147,7 @@
         },
         vine: {
           regex: /(?:http[s]?:\/\/)?(?:www.)?vine.co\/v\/([^\W]*)/,
-          html: "<iframe class=\"vine-embed\" src=\"{{protocol}}//vine.co/v/{{remote_id}}/embed/simple\" width=\"{{width}}\" height=\"{{width}}\" frameborder=\"0\"></iframe><script async src=\"http://platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>",
+          html: "<iframe class=\"vine-embed\" src=\"{{protocol}}//vine.co/v/{{remote_id}}/embed/simple\" width=\"600\" height=\"600\" frameborder=\"0\"></iframe><script async src=\"http://platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>",
           square: true
         },
         dailymotion: {
