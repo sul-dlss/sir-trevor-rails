@@ -2153,6 +2153,11 @@
         dailymotion: {
           regex: /(?:http[s]?:\/\/)?(?:www.)?dai(?:.ly|lymotion.com\/video)\/([^\W_]*)/,
           html: "<iframe src=\"{{protocol}}//www.dailymotion.com/embed/video/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
+        },
+        instagram: {
+          regex: /(?:http[s]?:\/\/)?(?:www.)?instagram.com\/p\/([^\W]*)/,
+          html: "<iframe src=\"{{protocol}}//instagram.com/p/{{remote_id}}/embed/\" width=\"600\" height=\"696\" frameborder=\"0\" scrolling=\"no\" allowtransparency=\"true\"></iframe>",
+          tall: true
         }
       },
   
@@ -2166,9 +2171,11 @@
   
       loadData: function(data){
         if (!this.providers.hasOwnProperty(data.source)) { return; }
-  
+
         if (this.providers[data.source].square) {
           this.$editor.addClass('st-block__editor--with-square-media');
+        } else if (this.providers[data.source].tall) {
+          this.$editor.addClass('st-block__editor--with-tall-media');
         } else {
           this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
         }
@@ -2196,9 +2203,12 @@
           match = provider.regex.exec(url);
   
           if(match !== null && !_.isUndefined(match[1])) {
+            var html_class = provider.tall ? 'tall' : (provider.square ? 'square' : '');
+            
             data = {
               source: index,
-              remote_id: match[1]
+              remote_id: match[1],
+              html_class: html_class
             };
   
             this.setAndLoadData(data);

@@ -1,4 +1,4 @@
-<div class="content-block video-block">
+<div class="content-block video-block <%= block['html_class'] %>">
 	<% if block['source'] == 'vimeo' %>
 	  <iframe src="//player.vimeo.com/video/<%= block['remote_id'] %>?title=1&amp;byline=1&amp;portrait=1&amp;autoplay=0" width="600" height="400" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
 	<% elsif block['source'] == 'youtube' %>
@@ -7,5 +7,7 @@
       <iframe src="//vine.co/v/<%= block['remote_id'] %>/embed/simple" width="600" height="600" frameborder="0"></iframe><script async src="http://platform.vine.co/static/scripts/embed.js" charset=\"utf-8\"></script>
     <% elsif block['source'] == 'dailymotion' %>
       <iframe src="//www.dailymotion.com/embed/video/<%= block['remote_id'] %>" width="580" height="320" frameborder="0"></iframe>
-    <% end %>
+    <% elsif block['source'] == 'instagram' %>
+      <iframe src="//instagram.com/p/<%= block['remote_id'] %>/embed/" width="600" height="696" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+    <% end %>    
 </div>

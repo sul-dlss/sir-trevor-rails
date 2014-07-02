@@ -262,12 +262,17 @@ ul.st-text-block {
 .st-block__upload-container:hover .st-upload-btn {
   background: #34e0c2; }
 
-.st-block__editor--with-square-media {
-  padding-top: 100%;
-  /* 16:9 */
+.st-block__editor--with-tall-media {
+  padding-top: 116%;
   height: 0;
   position: relative;
   width: 100%; }
+
+.st-block__editor--with-square-media {
+  padding-top: 100%;
+  height: 0;
+  position: relative;
+  width: 100%; }  
 
 .st-block__editor--with-sixteen-by-nine-media {
   padding-top: 56.25%;
