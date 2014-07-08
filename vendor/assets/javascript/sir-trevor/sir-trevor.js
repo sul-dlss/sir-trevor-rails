@@ -244,7 +244,7 @@
       general: {
         'delete':           'Delete?',
         'drop':             'Drag __block__ here',
-        'paste':            'Or paste URL here',
+        'paste':            '...and paste its URL here',
         'upload':           '...or choose a file',
         'close':            'close',
         'position':         'Position',
@@ -258,6 +258,9 @@
         'type_missing': "You must have a block of type __type__",
         'required_type_empty': "A required block type __type__ is empty",
         'load_fail': "There was a problem loading the contents of the document"
+      },
+      description: {
+        video: "Choose Youtube, Vimeo, Dailymotion or Vine video"
       },
       blocks: {
         text: {
@@ -967,6 +970,26 @@
     }
   
   };
+  SirTrevor.BlockMixins.Description = {
+
+    mixinName: "Description",
+
+    initializeDescription: function() {
+      SirTrevor.log("Adding description to block " + this.blockID);
+
+      this.description_options = _.extend({}, SirTrevor.DEFAULTS.Block.description_options, this.description_options);
+      console.log(this);
+      var description_html = $(_.template(this.description_options.html,
+          { block: this }));
+      console.log(description_html);
+
+      this.$editor.hide();
+      this.$inputs.append(description_html);
+      this.$dropzone = description_html;
+
+      this.$inner.addClass('st-block__inner--desciption');
+    }
+  };
   SirTrevor.BlockPositioner = (function(){
   
     var template = [
@@ -1438,6 +1461,13 @@
              '</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
+
+    var description_options = {
+        html: ['<div class="st-block__dropzone">',
+            '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+            '<p><%= i18n.t("description:"+block.type) %>',
+            '</p></div>'].join('\n')
+    };
   
     var paste_options = {
       html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
@@ -1456,7 +1486,8 @@
     SirTrevor.DEFAULTS.Block = {
       drop_options: drop_options,
       paste_options: paste_options,
-      upload_options: upload_options
+      upload_options: upload_options,
+      description_options: description_options
     };
   
     _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
@@ -1526,6 +1557,7 @@
   
         if (this.hasTextBlock) { this._initTextBlocks(); }
         if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
+        if (this.hasDescription) { this.withMixin(SirTrevor.BlockMixins.Description); }
         if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
         if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
         if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
@@ -2163,8 +2195,8 @@
   
       type: 'video',
       title: function() { return i18n.t('blocks:video:title'); },
-  
-      droppable: true,
+
+      hasDescription: true,
       pastable: true,
   
       icon_name: 'video',
