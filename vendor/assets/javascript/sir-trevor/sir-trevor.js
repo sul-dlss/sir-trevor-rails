@@ -260,7 +260,8 @@
         'load_fail': "There was a problem loading the contents of the document"
       },
       description: {
-        video: "Choose Youtube, Vimeo, Dailymotion or Vine video"
+        video: "Choose Youtube, Vimeo, Dailymotion or Vine video",
+        tweet: "Click on the timestamp next to the poster's handle <br/> to get your tweet"
       },
       blocks: {
         text: {
@@ -987,7 +988,7 @@
       this.$inputs.append(description_html);
       this.$dropzone = description_html;
 
-      this.$inner.addClass('st-block__inner--desciption');
+      this.$inner.addClass('st-block__inner--description');
     }
   };
   SirTrevor.BlockPositioner = (function(){
@@ -2001,9 +2002,7 @@
   
     var tweet_template = _.template([
       "<blockquote class='twitter-tweet' align='center'>",
-      "<p><%= text %></p>",
-      "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
-      "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
+      "<a href='//twitter.com/<%= tweet_user %>/status/<%= tweet_id %>'></a>",
       "</blockquote>",
       '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
     ].join("\n"));
@@ -2011,7 +2010,7 @@
     return SirTrevor.Block.extend({
   
       type: "tweet",
-      droppable: true,
+      hasDescription: true,
       pastable: true,
       fetchable: true,
   
@@ -2020,10 +2019,6 @@
       },
   
       title: function(){ return i18n.t('blocks:tweet:title'); },
-  
-      fetchUrl: function(tweetID) {
-        return "/tweets/?tweet_id=" + tweetID;
-      },
   
       icon_name: 'twitter',
   
@@ -2047,19 +2042,10 @@
           SirTrevor.log("Invalid Tweet URL");
           return;
         }
-  
-        // Twitter status
-        var tweetID = url.match(/[^\/]+$/);
-        if (!_.isEmpty(tweetID)) {
-          this.loading();
-          tweetID = tweetID[0];
-  
-          var ajaxOptions = {
-            url: this.fetchUrl(tweetID),
-            dataType: "json"
-          };
-  
-          this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
+
+        var tweetMatch = url.match(/(?:^|(?:https?\:)?\/\/(?:www\.)?twitter\.com(?:\:\d+)?\/(?:#!\/)?([\w_]+)\/status(?:es)?\/)(\d+)/i);
+        if (!_.isEmpty(tweetMatch)) {
+          this.setAndLoadData({tweet_user: tweetMatch[1], tweet_id: tweetMatch[2]});
         }
       },
   
@@ -2067,36 +2053,6 @@
         return (_.isURI(url) &&
                 url.indexOf("twitter") !== -1 &&
                 url.indexOf("status") !== -1);
-      },
-  
-      onTweetSuccess: function(data) {
-        // Parse the twitter object into something a bit slimmer..
-        var obj = {
-          user: {
-            profile_image_url: data.user.profile_image_url,
-            profile_image_url_https: data.user.profile_image_url_https,
-            screen_name: data.user.screen_name,
-            name: data.user.name
-          },
-          id: data.id_str,
-          text: data.text,
-          created_at: data.created_at,
-          entities: data.entities,
-          status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
-        };
-  
-        this.setAndLoadData(obj);
-        this.ready();
-      },
-  
-      onTweetFail: function() {
-        this.addMessage(i18n.t("blocks:tweet:fetch_error"));
-        this.ready();
-      },
-  
-      onDrop: function(transferData){
-        var url = transferData.getData('text/plain');
-        this.handleTwitterDropPaste(url);
       }
     });
   
