@@ -244,7 +244,10 @@
       general: {
         'delete':           'Delete?',
         'drop':             'Drag __block__ here',
-        'paste':            '...and paste its URL here',
+        'paste': {
+          video: 'https://www.youtube.com/watch?v=IAISUDbjXj0',
+          tweet: 'https://twitter.com/Represent/status/469872519860596736'
+        },
         'upload':           '...or choose a file',
         'close':            'close',
         'position':         'Position',
@@ -260,8 +263,8 @@
         'load_fail': "There was a problem loading the contents of the document"
       },
       description: {
-        video: "Choose Youtube, Vimeo, Dailymotion or Vine video",
-        tweet: "Click on the timestamp next to the poster's handle <br/> to get your tweet"
+        video: "Paste your Youtube, Vimeo, Dailymotion or Vine video URL here",
+        tweet: "Paste your tweet's URL or embed code here"
       },
       blocks: {
         text: {
@@ -943,7 +946,8 @@
       SirTrevor.log("Adding pastable to block " + this.blockID);
   
       this.paste_options = _.extend({}, SirTrevor.DEFAULTS.Block.paste_options, this.paste_options);
-      this.$inputs.append(_.template(this.paste_options.html, this));
+
+      this.$inputs.append(_.template(this.paste_options.html, {block: this}));
   
       this.$('.st-paste-block')
         .bind('click', function(){ $(this).select(); })
@@ -979,10 +983,8 @@
       SirTrevor.log("Adding description to block " + this.blockID);
 
       this.description_options = _.extend({}, SirTrevor.DEFAULTS.Block.description_options, this.description_options);
-      console.log(this);
       var description_html = $(_.template(this.description_options.html,
           { block: this }));
-      console.log(description_html);
 
       this.$editor.hide();
       this.$inputs.append(description_html);
@@ -1471,7 +1473,7 @@
     };
   
     var paste_options = {
-      html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
+      html: ['<input type="text" placeholder="<%= i18n.t("general:paste:"+block.type) %>"',
              ' class="st-block__paste-input st-paste-block">'].join('')
     };
   
@@ -2050,8 +2052,7 @@
       },
   
       validTweetUrl: function(url) {
-        return (_.isURI(url) &&
-                url.indexOf("twitter") !== -1 &&
+        return (url.indexOf("twitter") !== -1 &&
                 url.indexOf("status") !== -1);
       }
     });
