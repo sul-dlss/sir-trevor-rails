@@ -1,14 +1,7 @@
 <%
-	raise "Can't render Facebook post block, block contents don't match regex" unless
-		block['facebook_post_id'].to_s =~ /\A\d+\Z/
-
 	url =
 		case block['facebook_embed_type']
 		when 'post'
-			# TODO: the following regex is improvised. It might deter simple attacks, but
-			# I'm not knowledgeable enough to guarantee that it will shield us from all
-			# the weird stuff someone might put here.
-			raise "Can't render Facebook post block, poster looks weird" unless block['facebook_poster'].to_s =~ /\A[^\?\/\\&%#]+\Z/
 			"https://www.facebook.com/#{block['facebook_poster']}/posts/#{block['facebook_post_id']}"
 		when 'photo'
 			"https://www.facebook.com/photo.php?fbid=#{block['facebook_post_id']}"
