@@ -247,7 +247,7 @@
         'paste': {
           video: 'https://www.youtube.com/watch?v=IAISUDbjXj0',
           tweet: 'https://twitter.com/Represent/status/469872519860596736',
-	  facebook: 'https://www.facebook.com/representdotcom/posts/259128877616997'
+          facebook: 'https://www.facebook.com/representdotcom/posts/259128877616997'
         },
         'upload':           '...or choose a file',
         'close':            'close',
@@ -290,10 +290,10 @@
           'title': "Tweet",
           'fetch_error': "There was a problem fetching your tweet"
         },
-	facebook: {
-	  'title': "Facebook post",
+        facebook: {
+          'title': "Facebook post",
           'fetch_error': "There was a problem fetching your Facebook post"
-	},
+        },
         embedly: {
           'title': "Embedly",
           'fetch_error': "There was a problem fetching your embed",
@@ -2028,55 +2028,55 @@
       drop_options: {
         re_render_on_reorder: true
       },
-  
+
       title: function(){ return i18n.t('blocks:facebook:title'); },
-  
+
       icon_name: 'default', // TODO: embed new icon into SirTrevor's icon font
-  
+
       loadData: function(data) {
         if (_.isUndefined(data.status_url)) { data.status_url = ''; }
         this.$inner.find('div.fb-post').remove();
 
-	if (data['facebook_embed_type'] == 'post') {
-	  this.$inner.prepend(facebook_post_template(data));
-	} else if (data['facebook_embed_type'] == 'photo') {
-	  this.$inner.prepend(facebook_photo_template(data));
-	}
-	FB.XFBML.parse();
+        if (data['facebook_embed_type'] == 'post') {
+          this.$inner.prepend(facebook_post_template(data));
+        } else if (data['facebook_embed_type'] == 'photo') {
+          this.$inner.prepend(facebook_photo_template(data));
+        }
+        FB.XFBML.parse();
       },
-  
+
       onContentPasted: function(event){
         // Content pasted. Delegate to the drop parse method
         var input = $(event.target),
             val = input.val();
-  
+
         // Pass this to the same handler as onDrop
         this.handleFacebookPostDropPaste(val);
       },
-  
+
       handleFacebookPostDropPaste: function(url){
         if (!this.validFacebookPostUrl(url)) {
           SirTrevor.log("Invalid Facebook post URL");
           return;
         }
 
-	// Simple post embedding
+        // Simple post embedding
         var match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/([^\?\/\\&%#]+)\/posts\/(\d+)/i);
         if (!_.isEmpty(match)) {
           this.setAndLoadData({ facebook_poster: match[1], facebook_post_id: match[2], facebook_embed_type: 'post' });
         }
 
         // Support photo embedding code (which is slightly different)
-	// Expected URL: something like https://www.facebook.com/photo.php?fbid=259128877616997
-	match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/photo.php\?fbid=(\d+)/i);
+        // Expected URL: something like https://www.facebook.com/photo.php?fbid=259128877616997
+        match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/photo.php\?fbid=(\d+)/i);
         if (!_.isEmpty(match)) {
           this.setAndLoadData({ facebook_post_id: match[1], facebook_embed_type: 'photo' });
         }
       },
-  
+
       validFacebookPostUrl: function(url) {
         return url.indexOf("facebook") !== -1 &&
-		(url.indexOf("posts") !== -1 || url.indexOf("fbid") !== -1);
+          (url.indexOf("posts") !== -1 || url.indexOf("fbid") !== -1);
       }
     });
   })();
