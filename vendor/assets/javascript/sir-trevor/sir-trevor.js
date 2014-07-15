@@ -246,7 +246,8 @@
         'drop':             'Drag __block__ here',
         'paste': {
           video: 'https://www.youtube.com/watch?v=IAISUDbjXj0',
-          tweet: 'https://twitter.com/Represent/status/469872519860596736'
+          tweet: 'https://twitter.com/Represent/status/469872519860596736',
+          facebook: 'https://www.facebook.com/representdotcom/posts/259128877616997'
         },
         'upload':           '...or choose a file',
         'close':            'close',
@@ -264,7 +265,8 @@
       },
       description: {
         video: "Paste your Youtube, Vimeo, Dailymotion or Vine video URL here",
-        tweet: "Paste your tweet's URL or embed code here"
+        facebook: "Paste your Facebook post's URL or embed code here",
+        tweet: "Paste your tweet's URL or embed code here",
       },
       blocks: {
         text: {
@@ -287,6 +289,10 @@
         tweet: {
           'title': "Tweet",
           'fetch_error': "There was a problem fetching your tweet"
+        },
+        facebook: {
+          'title': "Facebook post",
+          'fetch_error': "There was a problem fetching your Facebook post"
         },
         embedly: {
           'title': "Embedly",
@@ -2000,22 +2006,94 @@
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
   });
+  SirTrevor.Blocks.Facebook = (function(){
+    var facebook_post_template = _.template([
+      // TODO: 610 is a magic "works-for-me" constant
+      '<div class="fb-post" data-width="610" data-href="https://www.facebook.com/<%= facebook_poster %>/posts/<%= facebook_post_id %>">',
+      '</div>'
+    ].join("\n"));
+
+    var facebook_photo_template = _.template([
+      // TODO: 610 is a magic "works-for-me" constant
+      '<div class="fb-post" data-width="610" data-href="https://www.facebook.com/photo.php?fbid=<%= facebook_post_id %>">',
+      '</div>'
+    ].join("\n"));
+
+    return SirTrevor.Block.extend({
+      type: "facebook",
+      hasDescription: true,
+      pastable: true,
+      fetchable: true,
+
+      drop_options: {
+        re_render_on_reorder: true
+      },
+
+      title: function(){ return i18n.t('blocks:facebook:title'); },
+
+      icon_name: 'default', // TODO: embed new icon into SirTrevor's icon font
+
+      loadData: function(data) {
+        if (_.isUndefined(data.status_url)) { data.status_url = ''; }
+        this.$inner.find('div.fb-post').remove();
+
+        if (data['facebook_embed_type'] == 'post') {
+          this.$inner.prepend(facebook_post_template(data));
+        } else if (data['facebook_embed_type'] == 'photo') {
+          this.$inner.prepend(facebook_photo_template(data));
+        }
+        FB.XFBML.parse();
+      },
+
+      onContentPasted: function(event){
+        // Content pasted. Delegate to the drop parse method
+        var input = $(event.target),
+            val = input.val();
+
+        // Pass this to the same handler as onDrop
+        this.handleFacebookPostDropPaste(val);
+      },
+
+      handleFacebookPostDropPaste: function(url){
+        if (!this.validFacebookPostUrl(url)) {
+          SirTrevor.log("Invalid Facebook post URL");
+          return;
+        }
+
+        // Simple post embedding
+        var match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/([^\?\/\\&%#]+)\/posts\/(\d+)/i);
+        if (!_.isEmpty(match)) {
+          this.setAndLoadData({ facebook_poster: match[1], facebook_post_id: match[2], facebook_embed_type: 'post' });
+        }
+
+        // Support photo embedding code (which is slightly different)
+        // Expected URL: something like https://www.facebook.com/photo.php?fbid=259128877616997
+        match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/photo.php\?fbid=(\d+)/i);
+        if (!_.isEmpty(match)) {
+          this.setAndLoadData({ facebook_post_id: match[1], facebook_embed_type: 'photo' });
+        }
+      },
+
+      validFacebookPostUrl: function(url) {
+        return url.indexOf("facebook") !== -1 &&
+          (url.indexOf("posts") !== -1 || url.indexOf("fbid") !== -1);
+      }
+    });
+  })();
   SirTrevor.Blocks.Tweet = (function(){
-  
     var tweet_template = _.template([
       "<blockquote class='twitter-tweet' align='center'>",
       "<a href='//twitter.com/<%= tweet_user %>/status/<%= tweet_id %>'></a>",
       "</blockquote>",
       '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
     ].join("\n"));
-  
+
     return SirTrevor.Block.extend({
-  
       type: "tweet",
       hasDescription: true,
       pastable: true,
       fetchable: true,
-  
+
       drop_options: {
         re_render_on_reorder: true
       },
@@ -2056,7 +2134,6 @@
                 url.indexOf("status") !== -1);
       }
     });
-  
   })();
   /*
     Unordered List
