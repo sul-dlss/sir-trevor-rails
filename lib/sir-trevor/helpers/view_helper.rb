@@ -55,8 +55,7 @@ module SirTrevor
 
       def sir_trevor_markdown(text)
         options = {:hard_wrap => true, :filter_html => true, :autolink => true, :no_intraemphasis => true, :fenced_code => true}
-        renderer = Redcarpet::Render::HTML.new(options)
-        markdown = Redcarpet::Markdown.new(CustomMarkdownFormatter)
+        markdown = Redcarpet::Markdown.new(CustomMarkdownFormatter.new(options))
         markdown.render(text).html_safe
       end
 
