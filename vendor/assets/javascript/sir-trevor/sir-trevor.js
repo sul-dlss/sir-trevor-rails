@@ -301,6 +301,9 @@
         },
         heading: {
           'title': "Heading"
+        },
+        soundcloud: {
+          title: 'Soundcloud'
         }
       }
     }
@@ -529,7 +532,7 @@
     var callbackSuccess = function(data){
       SirTrevor.log('Upload callback called');
       SirTrevor.EventBus.trigger("onUploadStop");
-  
+
       if (!_.isUndefined(success) && _.isFunction(success)) {
         _.bind(success, block)(data);
       }
@@ -1922,15 +1925,15 @@
     Heading Block
   */
   SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
-  
+
     type: 'Heading',
-  
+
     title: function(){ return i18n.t('blocks:heading:title'); },
-  
+
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
-  
+
     icon_name: 'heading',
-  
+
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
@@ -2197,6 +2200,33 @@
     });
   
   })();
+
+/* Soundcloud */
+SirTrevor.Blocks.Soundcloud = (function() {
+    console.log('eat shit');
+    return SirTrevor.Block.extend({
+
+        type: 'soundcloud',
+        type: 'soundcloud',
+
+        droppable: true,
+        pastable: true,
+        fetchable: true,
+
+        title: function () {
+            return i18n.t('blocks:soundcloud:title');
+        },
+
+        editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
+
+        icon_name: 'asdfasdf',
+
+        loadData: function (data) {
+            this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+        }
+    });
+})();
+
   SirTrevor.Blocks.Video = (function(){
   
     return SirTrevor.Block.extend({
