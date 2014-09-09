@@ -247,7 +247,8 @@
         'paste': {
           video: 'https://www.youtube.com/watch?v=IAISUDbjXj0',
           tweet: 'https://twitter.com/Represent/status/469872519860596736',
-          facebook: 'https://www.facebook.com/representdotcom/posts/259128877616997'
+          facebook: 'https://www.facebook.com/representdotcom/posts/259128877616997',
+          soundcloud: '&#x3C;iframe width=&#x22;100%&#x22; height=&#x22;166&#x22; scrolling=&#x22;no&#x22; frameborder=&#x22;no&#x22; src=&#x22;https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/34019569&#x26;color=0066cc&#x22;&#x3E;&#x3C;/iframe&#x3E;'
         },
         'upload':           '...or choose a file',
         'close':            'close',
@@ -267,6 +268,7 @@
         video: "Paste your Youtube, Vimeo, Dailymotion or Vine video URL here",
         facebook: "Paste your Facebook post's URL or embed code here",
         tweet: "Paste your tweet's URL or embed code here",
+        soundcloud: "Paste your Soundcloud embed code here"
       },
       blocks: {
         text: {
@@ -2202,30 +2204,42 @@
   })();
 
 /* Soundcloud */
-SirTrevor.Blocks.Soundcloud = (function() {
-    console.log('eat shit');
-    return SirTrevor.Block.extend({
+SirTrevor.Blocks.Soundcloud = SirTrevor.Block.extend({
+    config: {
+        regex: /<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/tracks\/(\d+)(&color=0066cc)?"><\/iframe>/,
+        html: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{track_id}}&color=0066cc"></iframe>'
+    },
 
-        type: 'soundcloud',
-        type: 'soundcloud',
+    type: 'soundcloud',
+    hasDescription: true,
+    pastable: true,
 
-        droppable: true,
-        pastable: true,
-        fetchable: true,
+    title: function () { return i18n.t('blocks:soundcloud:title'); },
 
-        title: function () {
-            return i18n.t('blocks:soundcloud:title');
-        },
+    icon_name: 'video',
 
-        editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
+    loadData: function (data) {
+        embed = this.config.html
+            .replace('{{track_id}}', data.track_id);
 
-        icon_name: 'asdfasdf',
+        this.$editor.html(embed);
+    },
 
-        loadData: function (data) {
-            this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+    onContentPasted: function(event) {
+        this.handleInput($(event.target).val());
+    },
+
+    handleInput: function(url) {
+        var match = this.config.regex.exec(url);
+        console.log(match);
+
+        if(match !== null && !_.isUndefined(match[1])) {
+            this.setAndLoadData({
+                track_id: match[1]
+            });
         }
-    });
-})();
+    }
+});
 
   SirTrevor.Blocks.Video = (function(){
   
