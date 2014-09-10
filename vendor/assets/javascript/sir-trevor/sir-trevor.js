@@ -2204,42 +2204,44 @@
   })();
 
 /* Soundcloud */
-SirTrevor.Blocks.Soundcloud = SirTrevor.Block.extend({
+  SirTrevor.Blocks.Soundcloud = SirTrevor.Block.extend({
     config: {
-        regex: /<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/tracks\/(\d+)(&color=0066cc)?"><\/iframe>/,
-        html: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{track_id}}&color=0066cc"></iframe>'
+      regex: /<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/tracks\/(\d+)(&color=0066cc)?"><\/iframe>/,
+      html: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{track_id}}&color=0066cc"></iframe>'
     },
 
     type: 'soundcloud',
     hasDescription: true,
     pastable: true,
 
-    title: function () { return i18n.t('blocks:soundcloud:title'); },
+    title: function () {
+      return i18n.t('blocks:soundcloud:title');
+    },
 
     icon_name: 'video',
 
     loadData: function (data) {
-        embed = this.config.html
-            .replace('{{track_id}}', data.track_id);
+      embed = this.config.html
+        .replace('{{track_id}}', data.track_id);
 
-        this.$editor.html(embed);
+      this.$editor.html(embed);
     },
 
-    onContentPasted: function(event) {
-        this.handleInput($(event.target).val());
+    onContentPasted: function (event) {
+      this.handleInput($(event.target).val());
     },
 
-    handleInput: function(url) {
-        var match = this.config.regex.exec(url);
-        console.log(match);
+    handleInput: function (url) {
+      var match = this.config.regex.exec(url);
+      console.log(match);
 
-        if(match !== null && !_.isUndefined(match[1])) {
-            this.setAndLoadData({
-                track_id: match[1]
-            });
-        }
+      if (match !== null && !_.isUndefined(match[1])) {
+        this.setAndLoadData({
+          track_id: match[1]
+        });
+      }
     }
-});
+  });
 
   SirTrevor.Blocks.Video = (function(){
   
