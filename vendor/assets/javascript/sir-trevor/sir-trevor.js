@@ -293,7 +293,7 @@
           'fetch_error': "There was a problem fetching your tweet"
         },
         facebook: {
-          'title': "Facebook post",
+          'title': "Facebook",
           'fetch_error': "There was a problem fetching your Facebook post"
         },
         embedly: {
