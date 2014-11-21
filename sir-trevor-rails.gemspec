@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "redcarpet", "~> 2.0.1"
   s.add_dependency 'twitter-text', '~> 1.4'
-  s.add_dependency "underscore-rails"
+  s.add_dependency "underscore-rails", "~> 1.6.0"
 
   s.files = `git ls-files`.split("\n")
   s.executables = `git ls-files`.split("\n").map{|f| f =~ /^bin\/(.*)/ ? $1 : nil}.compact
