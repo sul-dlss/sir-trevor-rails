@@ -2206,8 +2206,8 @@
 /* Soundcloud */
   SirTrevor.Blocks.Soundcloud = SirTrevor.Block.extend({
     config: {
-      regex: /<iframe width="100%" height="(\d+)" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/tracks\/(\d+)([a-z0-9_;&=]+)"><\/iframe>/,
-      html: '<iframe width="100%" height="{{embed_height}}" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{embed_id}}{{embed_options}}"></iframe>'
+      regex: /<iframe width="100%" height="(\d+)" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/(tracks|users)\/(\d+)([a-z0-9_;&=]+)"><\/iframe>/,
+      html: '<iframe width="100%" height="{{embed_height}}" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/{{embed_type}}/{{embed_id}}{{embed_options}}"></iframe>'
     },
 
     type: 'soundcloud',
@@ -2222,6 +2222,7 @@
 
     loadData: function (data) {
       embed = this.config.html
+        .replace('{{embed_type}}', data.embed_type)
         .replace('{{embed_id}}', data.embed_id)
         .replace('{{embed_height}}', data.embed_height)
         .replace('{{embed_options}}', data.embed_options);
@@ -2239,8 +2240,9 @@
       if (match !== null && !_.isUndefined(match[2])) {
         this.setAndLoadData({
           embed_height: match[1],
-          embed_id: match[2],
-          embed_options: match[3]
+          embed_type: match[2],
+          embed_id: match[3],
+          embed_options: match[4]
         });
       }
     }
