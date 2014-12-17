@@ -2206,7 +2206,7 @@
 /* Soundcloud */
   SirTrevor.Blocks.Soundcloud = SirTrevor.Block.extend({
     config: {
-      regex: /<iframe width="100%" height="(\d+)" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/(tracks|users)\/(\d+)([a-z0-9_;&=]+)"><\/iframe>/,
+      regex: /<iframe width="100%" height="(\d+)" scrolling="no" frameborder="no" src="https?:\/\/w.soundcloud.com\/player\/\?url=https?%3A\/\/api\.soundcloud\.com\/(tracks|users|playlists)\/(\d+)([a-z0-9_;&=]+)"><\/iframe>/,
       html: '<iframe width="100%" height="{{embed_height}}" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/{{embed_type}}/{{embed_id}}{{embed_options}}"></iframe>'
     },
 
