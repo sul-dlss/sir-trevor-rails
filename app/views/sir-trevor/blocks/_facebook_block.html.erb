@@ -5,9 +5,16 @@
 			"https://www.facebook.com/#{block['facebook_poster']}/posts/#{block['facebook_post_id']}"
 		when 'photo'
 			"https://www.facebook.com/photo.php?fbid=#{block['facebook_post_id']}"
-		else raise 'Unknown Facebook embed type' end
+		when 'video'
+			"https://www.facebook.com/#{block['facebook_poster']}/videos/#{block['facebook_post_id']}"
+		end
 %>
 <div class="content-block facebook-post-block">
-	<div class="fb-post" data-width="610" data-href="<%= url %>">
-	</div>
+	<% if ['post','photo'].include?(block['facebook_embed_type']) %>
+		<div class="fb-post" data-width="610" data-href="<%= url %>">
+		</div>
+	<% elsif block['facebook_embed_type'] == 'video' %>
+		<div class="fb-video" data-width="610" data-href="<%= url %>" data-show-text="true">
+		</div>
+	<% else raise 'Unknown Facebook embed type' end %>
 </div>

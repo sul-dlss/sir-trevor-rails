@@ -2018,6 +2018,12 @@
       '</div>'
     ].join("\n"));
 
+    var facebook_video_template = _.template([
+      // TODO: 610 is a magic "works-for-me" constant
+      '<div class="fb-video" data-width="610" data-href="https://www.facebook.com/<%= facebook_poster %>/videos/<%= facebook_post_id %>/" data-show-text="true"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/<%= facebook_poster %>/videos/<%= facebook_post_id %>/"></blockquote></div></div>',
+      '</div>'
+    ].join("\n"));
+    
     var facebook_photo_template = _.template([
       // TODO: 610 is a magic "works-for-me" constant
       '<div class="fb-post" data-width="610" data-href="https://www.facebook.com/photo.php?fbid=<%= facebook_post_id %>">',
@@ -2044,6 +2050,8 @@
 
         if (data['facebook_embed_type'] == 'post') {
           this.$inner.prepend(facebook_post_template(data));
+        } else if (data['facebook_embed_type'] == 'video') {
+          this.$inner.prepend(facebook_video_template(data));
         } else if (data['facebook_embed_type'] == 'photo') {
           this.$inner.prepend(facebook_photo_template(data));
         }
@@ -2071,6 +2079,12 @@
           this.setAndLoadData({ facebook_poster: match[1], facebook_post_id: match[2], facebook_embed_type: 'post' });
         }
 
+        // Video embedding
+        var match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/([^\?\/\\&%#]+)\/videos\/(\d+)/i);
+        if (!_.isEmpty(match)) {
+          this.setAndLoadData({ facebook_poster: match[1], facebook_post_id: match[2], facebook_embed_type: 'video' });
+        }
+
         // Support photo embedding code (which is slightly different)
         // Expected URL: something like https://www.facebook.com/photo.php?fbid=259128877616997
         match = url.match(/(?:https?\:\/\/)?(?:www\.)?facebook\.com\/photo.php\?fbid=(\d+)/i);
@@ -2081,7 +2095,7 @@
 
       validFacebookPostUrl: function(url) {
         return url.indexOf("facebook") !== -1 &&
-          (url.indexOf("posts") !== -1 || url.indexOf("fbid") !== -1);
+          (url.indexOf("posts") !== -1 || url.indexOf("fbid") !== -1 || url.indexOf("videos") !== -1);
       }
     });
   })();
